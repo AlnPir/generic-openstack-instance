@@ -35,13 +35,6 @@ resource "openstack_compute_secgroup_v2" "sg-web-front" {
     ip_protocol = "tcp"
     cidr        = "0.0.0.0/0"
   }
-
-  rule {
-    from_port   = 443
-    to_port     = 443
-    ip_protocol = "tcp"
-    cidr        = "0.0.0.0/0"
-  }
 }
 
 data "cloudinit_config" "base_config" {
@@ -49,7 +42,8 @@ data "cloudinit_config" "base_config" {
     filename     = "base.yml"
     content_type = "text/cloud-config"
     content = templatefile("scripts/base.yml", {
-      sshkey = var.sshkey
+      sshkey        = var.sshkey
+      containerfile = filebase64("config/containerfile")
     })
   }
 }
